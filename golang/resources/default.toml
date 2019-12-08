@@ -1,0 +1,4 @@
+[Data]
+OrganizationURL = "data/organizations.json"
+UserURL = "data/users.json"
+TicketURL = "data/tickets.json"
