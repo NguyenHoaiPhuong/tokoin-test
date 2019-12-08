@@ -1,4 +1,4 @@
 [URLs]
-    OrganizationURL = "data/organizations.json"
-    UserURL = "data/users.json"
-    TicketURL = "data/tickets.json"
+    OrganizationURL = "./resources/data/organizations.json"
+    UserURL = "./resources/data/users.json"
+    TicketURL = "./resources/data/tickets.json"
