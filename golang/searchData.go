@@ -34,11 +34,6 @@ func EnterSearchTermAndValue() (key, value string) {
 	return key, value
 }
 
-// SearchTicket : search ticket
-func SearchTicket() {
-
-}
-
 // SearchOrganization : search organization
 func SearchOrganization() {
 

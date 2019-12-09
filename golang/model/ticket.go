@@ -24,7 +24,7 @@ type Ticket struct {
 type Tickets []*Ticket
 
 // TicketByID : sorted ticket by its ID
-type TicketByID map[int]*Ticket
+type TicketByID map[string]*Ticket
 
 // TicketByExternalID : sorted ticket by its ExternalID
 type TicketByExternalID map[string]*Ticket
@@ -32,8 +32,11 @@ type TicketByExternalID map[string]*Ticket
 // TicketBySubject : sorted ticket by its subject
 type TicketBySubject map[string]*Ticket
 
-// TicketsByOrganizationID : map of tickets and OrganizationID. Key is OrganizationID.
+// TicketsByOrganizationID : nested map. First key is OrganizationID.
 type TicketsByOrganizationID map[int]TicketBySubject
 
-// TicketsBySubmitterID : sorted ticket by its ExternalID
+// TicketsBySubmitterID : nested map. First key is SubmitterID.
 type TicketsBySubmitterID map[int]TicketBySubject
+
+// TicketsByAssigneeID : nested map. First key is AssigneeID.
+type TicketsByAssigneeID map[int]TicketBySubject

@@ -6,12 +6,7 @@ import (
 	"github.com/NguyenHoaiPhuong/tokoin-test/golang/utils"
 )
 
-var tickets model.Tickets
 var organizations model.Organizations
-
-func initTicket() {
-	tickets = make(model.Tickets, 0)
-}
 
 func initOrganization() {
 	organizations = make(model.Organizations, 0)
@@ -22,13 +17,6 @@ func LoadData() {
 	LoadUserData()
 	LoadTicketData()
 	LoadOrganizationData()
-}
-
-// LoadTicketData : load ticket
-func LoadTicketData() {
-	err := jsonfunc.ReadFromFile(cfg.URLs.TicketURL, &tickets)
-	utils.CheckError(err)
-	// fmt.Println(tickets[0].CreatedAt)
 }
 
 // LoadOrganizationData : load organization
