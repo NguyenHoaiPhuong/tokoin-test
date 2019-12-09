@@ -15,3 +15,12 @@ type Organization struct {
 
 // Organizations : slice of Organization
 type Organizations []*Organization
+
+// OrganizationByID : sorted organization by its ID
+type OrganizationByID map[int]*Organization
+
+// OrganizationByExternalID : sorted organization by its ExternalID
+type OrganizationByExternalID map[string]*Organization
+
+// OrganizationByName : sorted organization by its Name
+type OrganizationByName map[string]*Organization
