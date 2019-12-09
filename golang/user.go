@@ -32,19 +32,32 @@ func LoadUserData() {
 
 	err := jsonfunc.ReadFromFile(cfg.URLs.UserURL, &users)
 	utils.CheckError(err)
-	for _, user := range users {
-		userByID[user.ID] = user
-		userByExternalID[user.ExternalID] = user
-		// IMPORTANT: user name is unique???
-		userByName[user.Name] = user
 
-		if _, ok := usersByOrganizationID[user.OrganizationID]; !ok {
-			usersByOrganizationID[user.OrganizationID] = make(model.UserByName, 0)
-		}
-		sortedUsers := usersByOrganizationID[user.OrganizationID]
-		sortedUsers[user.Name] = user
-		usersByOrganizationID[user.OrganizationID] = sortedUsers
+	for _, user := range users {
+		appendToUserByID(user)
+		appendToUserByExternalID(user)
+		appendToUserByName(user)
 	}
+}
+
+func appendToUserByID(user *model.User) {
+	userByID[user.ID] = user
+}
+
+func appendToUserByExternalID(user *model.User) {
+	userByExternalID[user.ExternalID] = user
+}
+
+func appendToUserByName(user *model.User) {
+	// IMPORTANT: user name is unique???
+	userByName[user.Name] = user
+
+	if _, ok := usersByOrganizationID[user.OrganizationID]; !ok {
+		usersByOrganizationID[user.OrganizationID] = make(model.UserByName, 0)
+	}
+	sortedUsers := usersByOrganizationID[user.OrganizationID]
+	sortedUsers[user.Name] = user
+	usersByOrganizationID[user.OrganizationID] = sortedUsers
 }
 
 // SearchUser : search user
