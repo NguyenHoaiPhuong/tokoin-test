@@ -29,5 +29,11 @@ type Users []*User
 // UserByID : sorted user by its ID
 type UserByID map[int]*User
 
+// UserByName : sorted user by its name
+type UserByName map[string]*User
+
 // UserByExternalID : sorted user by its external ID
 type UserByExternalID map[string]*User
+
+// UsersByOrganizationID : map of users and OrganizationID. Key is OrganizationID.
+type UsersByOrganizationID map[int]UserByName

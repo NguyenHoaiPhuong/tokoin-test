@@ -83,15 +83,22 @@ func SearchUser() {
 		if err != nil {
 			utils.CheckError(err)
 		}
-		if user, ok := usersByID[id]; !ok {
+		if user, ok := userByID[id]; !ok {
 			fmt.Println(aurora.Red("User with specific ID"), aurora.Red(id), aurora.Red("doesn't exist."))
 		} else {
 			utils.PrintPtrStructObject(user)
 		}
 	case "external_id":
 		externalID := value
-		if user, ok := usersByExternalID[externalID]; !ok {
+		if user, ok := userByExternalID[externalID]; !ok {
 			fmt.Println(aurora.Red("User with specific ExternalID"), aurora.Red(externalID), aurora.Red("doesn't exist."))
+		} else {
+			utils.PrintPtrStructObject(user)
+		}
+	case "name":
+		name := value
+		if user, ok := userByName[name]; !ok {
+			fmt.Println(aurora.Red("User with specific name"), aurora.Red(name), aurora.Red("doesn't exist."))
 		} else {
 			utils.PrintPtrStructObject(user)
 		}

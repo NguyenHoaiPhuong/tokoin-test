@@ -22,3 +22,18 @@ type Ticket struct {
 
 // Tickets : slice of Ticket
 type Tickets []*Ticket
+
+// TicketByID : sorted ticket by its ID
+type TicketByID map[int]*Ticket
+
+// TicketByExternalID : sorted ticket by its ExternalID
+type TicketByExternalID map[string]*Ticket
+
+// TicketBySubject : sorted ticket by its subject
+type TicketBySubject map[string]*Ticket
+
+// TicketsByOrganizationID : map of tickets and OrganizationID. Key is OrganizationID.
+type TicketsByOrganizationID map[int]TicketBySubject
+
+// TicketsBySubmitterID : sorted ticket by its ExternalID
+type TicketsBySubmitterID map[int]TicketBySubject
