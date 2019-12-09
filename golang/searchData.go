@@ -1,55 +1,17 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strconv"
 
 	"github.com/NguyenHoaiPhuong/tokoin-test/golang/utils"
 	"github.com/logrusorgru/aurora"
 )
 
-// ReadInput : read input from terminal
-func ReadInput() string {
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	t := scanner.Text()
-	if err := scanner.Err(); err != nil {
-		fmt.Println("Error reading from input: ", err)
-	}
-	return t
-}
-
-// SelectOption : read input text from terminal.
-// If input = quit, return 0
-// If input = 1, return 1
-// If input = 2, return 2
-// else, return 3
-func SelectOption() int8 {
-	fmt.Println("Type", aurora.Magenta("quit"), "to exit at any time, Press", aurora.Magenta("Enter"), "to continue")
-	fmt.Println(aurora.BrightYellow("\tSelect search options:"))
-	fmt.Println(aurora.BrightYellow("\t* Press 1 to search"))
-	fmt.Println(aurora.BrightYellow("\t* Press 2 to view a list of searchable fields"))
-	fmt.Println(aurora.BrightYellow("\t* Type quit to exit"))
-
-	t := ReadInput()
-	switch t {
-	case "quit":
-		return 0
-	case "1":
-		return 1
-	case "2":
-		return 2
-	default:
-		return 3
-	}
-}
-
 // Search : print search results
 func Search() {
 	fmt.Println(aurora.BrightCyan("Select 1) Users or 2) Tickets or 3) Organizations"))
-	sel := ReadInput()
+	sel := utils.ReadInput()
 	switch sel {
 	case "1":
 		SearchUser()
@@ -65,10 +27,10 @@ func Search() {
 // EnterSearchTermAndValue : enter search term and value
 func EnterSearchTermAndValue() (key, value string) {
 	fmt.Println(aurora.BrightCyan("Enter search term"))
-	key = ReadInput()
+	key = utils.ReadInput()
 
 	fmt.Println(aurora.BrightCyan("Enter search value"))
-	value = ReadInput()
+	value = utils.ReadInput()
 
 	return key, value
 }

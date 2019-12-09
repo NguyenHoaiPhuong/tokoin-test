@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/NguyenHoaiPhuong/tokoin-test/golang/config"
+	"github.com/NguyenHoaiPhuong/tokoin-test/golang/utils"
 	"github.com/logrusorgru/aurora"
 )
 
@@ -13,24 +14,30 @@ func init() {
 	cfg = config.SetupConfig("./resources", "default.toml")
 }
 
-func main() {
-	// For testing configurations
-	// cfg.Print()
+func introduction() {
+	fmt.Println("Type", aurora.Magenta("quit"), "to exit at any time, Press", aurora.Magenta("Enter"), "to continue")
+	fmt.Println(aurora.BrightYellow("\tSelect search options:"))
+	fmt.Println(aurora.BrightYellow("\t* Press 1 to search"))
+	fmt.Println(aurora.BrightYellow("\t* Press 2 to view a list of searchable fields"))
+	fmt.Println(aurora.BrightYellow("\t* Type quit to exit"))
+}
 
+func main() {
 	LoadData()
 
 	cont := true
 	for cont {
-		sel := SelectOption()
+		introduction()
+		sel := utils.ReadInput()
 		switch sel {
-		case 0:
+		case "quit":
 			cont = false
-		case 1:
+		case "1":
 			Search()
-		case 2:
+		case "2":
 			SearchableFields()
-		case 3:
-			fmt.Println(aurora.Red("Selected option is invalid. Please type again."))
+		default:
+			fmt.Println(aurora.Red("Selected option is invalid. Please try again."))
 		}
 	}
 }
