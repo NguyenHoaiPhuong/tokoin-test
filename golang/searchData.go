@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/NguyenHoaiPhuong/tokoin-test/golang/utils"
 	"github.com/logrusorgru/aurora"
@@ -33,40 +32,6 @@ func EnterSearchTermAndValue() (key, value string) {
 	value = utils.ReadInput()
 
 	return key, value
-}
-
-// SearchUser : search user
-func SearchUser() {
-	key, value := EnterSearchTermAndValue()
-
-	switch key {
-	case "_id":
-		id, err := strconv.Atoi(value)
-		if err != nil {
-			utils.CheckError(err)
-		}
-		if user, ok := userByID[id]; !ok {
-			fmt.Println(aurora.Red("User with specific ID"), aurora.Red(id), aurora.Red("doesn't exist."))
-		} else {
-			utils.PrintPtrStructObject(user)
-		}
-	case "external_id":
-		externalID := value
-		if user, ok := userByExternalID[externalID]; !ok {
-			fmt.Println(aurora.Red("User with specific ExternalID"), aurora.Red(externalID), aurora.Red("doesn't exist."))
-		} else {
-			utils.PrintPtrStructObject(user)
-		}
-	case "name":
-		name := value
-		if user, ok := userByName[name]; !ok {
-			fmt.Println(aurora.Red("User with specific name"), aurora.Red(name), aurora.Red("doesn't exist."))
-		} else {
-			utils.PrintPtrStructObject(user)
-		}
-	default:
-		fmt.Println(aurora.Red("Search term"), aurora.Red(key), aurora.Red("hasn't been supported yet"))
-	}
 }
 
 // SearchTicket : search ticket
