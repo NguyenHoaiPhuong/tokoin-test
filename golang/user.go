@@ -62,7 +62,7 @@ func appendToUserByName(user *model.User) {
 
 // SearchUser : search user
 func SearchUser() {
-	key, value := EnterSearchTermAndValue()
+	key, value := utils.EnterSearchTermAndValue()
 
 	switch key {
 	case "_id":
@@ -81,5 +81,6 @@ func SearchUser() {
 		utils.PrintObject(user, ok, key, value)
 	default:
 		fmt.Println(aurora.Red("Searching term " + key + " hasn't been supported yet"))
+		fmt.Println()
 	}
 }

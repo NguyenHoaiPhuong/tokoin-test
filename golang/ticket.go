@@ -88,8 +88,7 @@ func appendToTicketsByAssigneeID(ticket *model.Ticket) {
 
 // SearchTicket : search ticket
 func SearchTicket() {
-	key, value := EnterSearchTermAndValue()
-	fmt.Println()
+	key, value := utils.EnterSearchTermAndValue()
 
 	switch key {
 	case "_id":
