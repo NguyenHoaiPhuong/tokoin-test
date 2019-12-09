@@ -25,3 +25,9 @@ type User struct {
 
 // Users : slice of users
 type Users []*User
+
+// UserByID : sorted user by its ID
+type UserByID map[int]*User
+
+// UserByExternalID : sorted user by its external ID
+type UserByExternalID map[string]*User
