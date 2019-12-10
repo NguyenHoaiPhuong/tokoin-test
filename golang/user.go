@@ -64,6 +64,9 @@ func appendToUserByName(user *model.User) {
 func SearchUser() {
 	key, value := utils.EnterSearchTermAndValue()
 
+	var user *model.User
+	var isFound bool
+
 	switch key {
 	case "_id":
 		id, err := strconv.Atoi(value)
@@ -71,16 +74,53 @@ func SearchUser() {
 			utils.CheckError(err)
 			return
 		}
-		user, ok := userByID[id]
-		utils.PrintObject(user, ok, key, value)
+		user, isFound = userByID[id]
+		utils.PrintObject(user, isFound, key, value)
 	case "external_id":
-		user, ok := userByExternalID[value]
-		utils.PrintObject(user, ok, key, value)
+		user, isFound = userByExternalID[value]
+		utils.PrintObject(user, isFound, key, value)
 	case "name":
-		user, ok := userByName[value]
-		utils.PrintObject(user, ok, key, value)
+		user, isFound = userByName[value]
+		utils.PrintObject(user, isFound, key, value)
 	default:
 		fmt.Println(aurora.Red("Searching term " + key + " hasn't been supported yet"))
 		fmt.Println()
+	}
+
+	if isFound {
+		SearchUserTickets(user)
+		SearchUserOrganization(user)
+	}
+
+	fmt.Println()
+}
+
+// SearchUserTickets : search all tickets related to this user
+func SearchUserTickets(user *model.User) {
+	id := user.ID
+
+	sortedTickets := ticketsByAssigneeID[id]
+	idx := 1
+	for ticketSubject := range sortedTickets {
+		fmt.Println(aurora.BrightCyan("Assignee Ticket "+strconv.Itoa(idx)), ":", aurora.BrightGreen(ticketSubject))
+		idx++
+	}
+
+	sortedTickets = ticketsBySubmitterID[id]
+	idx = 1
+	for ticketSubject := range sortedTickets {
+		fmt.Println(aurora.BrightCyan("Submitter Ticket "+strconv.Itoa(idx)), ":", aurora.BrightGreen(ticketSubject))
+		idx++
+	}
+}
+
+// SearchUserOrganization : search organization related to this user
+func SearchUserOrganization(user *model.User) {
+	orgID := user.OrganizationID
+	org, isFound := organizationByID[orgID]
+	if !isFound {
+		utils.NoResult(org, "_id", strconv.Itoa(orgID))
+	} else {
+		fmt.Println(aurora.BrightCyan("Organization name"), ":", aurora.BrightGreen(org.Name))
 	}
 }
