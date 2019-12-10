@@ -25,7 +25,6 @@ func PrintObject(obj interface{}, isFound bool, key, value string) {
 	} else {
 		PrintPtrStructObject(obj)
 	}
-	fmt.Println()
 }
 
 // noResult : print no results found

@@ -54,6 +54,9 @@ func appendToOrganizationByName(organization *model.Organization) {
 func SearchOrganization() {
 	key, value := utils.EnterSearchTermAndValue()
 
+	var org *model.Organization
+	var isFound bool
+
 	switch key {
 	case "_id":
 		id, err := strconv.Atoi(value)
@@ -61,16 +64,45 @@ func SearchOrganization() {
 			utils.CheckError(err)
 			return
 		}
-		org, ok := organizationByID[id]
-		utils.PrintObject(org, ok, key, value)
+		org, isFound = organizationByID[id]
+		utils.PrintObject(org, isFound, key, value)
 	case "external_id":
-		org, ok := organizationByExternalID[value]
-		utils.PrintObject(org, ok, key, value)
+		org, isFound = organizationByExternalID[value]
+		utils.PrintObject(org, isFound, key, value)
 	case "name":
-		org, ok := organizationByName[value]
-		utils.PrintObject(org, ok, key, value)
+		org, isFound = organizationByName[value]
+		utils.PrintObject(org, isFound, key, value)
 	default:
 		fmt.Println(aurora.Red("Searching term " + key + " hasn't been supported yet"))
 		fmt.Println()
+	}
+
+	if isFound {
+		SearchOrganizationTickets(org)
+		SearchOrganizationUsers(org)
+	}
+
+	fmt.Println()
+}
+
+// SearchOrganizationTickets : search all tickets related to this organization
+func SearchOrganizationTickets(org *model.Organization) {
+	id := org.ID
+	sortedTickets := ticketsByOrganizationID[id]
+	idx := 1
+	for ticketSubject := range sortedTickets {
+		fmt.Println(aurora.BrightYellow("Ticket " + strconv.Itoa(idx) + ": " + ticketSubject))
+		idx++
+	}
+}
+
+// SearchOrganizationUsers : search all users related to this organization
+func SearchOrganizationUsers(org *model.Organization) {
+	id := org.ID
+	sortedUsers := usersByOrganizationID[id]
+	idx := 1
+	for userName := range sortedUsers {
+		fmt.Println(aurora.BrightYellow("User " + strconv.Itoa(idx) + ": " + userName))
+		idx++
 	}
 }
