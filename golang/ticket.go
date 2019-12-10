@@ -92,25 +92,41 @@ func SearchTicket() {
 
 	switch key {
 	case "_id":
-		ticket, ok := ticketByID[value]
-		utils.PrintObject(ticket, ok, key, value)
+		ticket, isFound := ticketByID[value]
+		utils.PrintObject(ticket, isFound, key, value)
+		if isFound {
+			SearchTicketUsers(ticket)
+			SearchTicketOrganization(ticket)
+		}
 	case "external_id":
-		ticket, ok := ticketByExternalID[value]
-		utils.PrintObject(ticket, ok, key, value)
+		ticket, isFound := ticketByExternalID[value]
+		utils.PrintObject(ticket, isFound, key, value)
+		if isFound {
+			SearchTicketUsers(ticket)
+			SearchTicketOrganization(ticket)
+		}
 	case "subject":
-		ticket, ok := ticketBySubject[value]
-		utils.PrintObject(ticket, ok, key, value)
+		ticket, isFound := ticketBySubject[value]
+		utils.PrintObject(ticket, isFound, key, value)
+		if isFound {
+			SearchTicketUsers(ticket)
+			SearchTicketOrganization(ticket)
+		}
 	case "organization_id":
 		orgID, err := strconv.Atoi(value)
 		if err != nil {
 			utils.CheckError(err)
 			return
 		}
-		tickets, ok := ticketsByOrganizationID[orgID]
+		tickets, isFound := ticketsByOrganizationID[orgID]
 		idx := 1
 		for _, ticket := range tickets {
 			fmt.Println(aurora.BrightYellow("Ticket " + strconv.Itoa(idx)))
-			utils.PrintObject(ticket, ok, key, value)
+			utils.PrintObject(ticket, isFound, key, value)
+			if isFound {
+				SearchTicketUsers(ticket)
+				SearchTicketOrganization(ticket)
+			}
 			idx++
 		}
 	case "submitter_id":
@@ -119,11 +135,15 @@ func SearchTicket() {
 			utils.CheckError(err)
 			return
 		}
-		tickets, ok := ticketsBySubmitterID[submitterID]
+		tickets, isFound := ticketsBySubmitterID[submitterID]
 		idx := 1
 		for _, ticket := range tickets {
 			fmt.Println(aurora.BrightYellow("Ticket " + strconv.Itoa(idx)))
-			utils.PrintObject(ticket, ok, key, value)
+			utils.PrintObject(ticket, isFound, key, value)
+			if isFound {
+				SearchTicketUsers(ticket)
+				SearchTicketOrganization(ticket)
+			}
 			idx++
 		}
 	case "assignee_id":
@@ -132,15 +152,51 @@ func SearchTicket() {
 			utils.CheckError(err)
 			return
 		}
-		tickets, ok := ticketsByAssigneeID[assigneeID]
+		tickets, isFound := ticketsByAssigneeID[assigneeID]
 		idx := 1
 		for _, ticket := range tickets {
 			fmt.Println(aurora.BrightYellow("Ticket " + strconv.Itoa(idx)))
-			utils.PrintObject(ticket, ok, key, value)
+			utils.PrintObject(ticket, isFound, key, value)
+			if isFound {
+				SearchTicketUsers(ticket)
+				SearchTicketOrganization(ticket)
+			}
 			idx++
 		}
 	default:
 		fmt.Println(aurora.Red("Searching term " + key + " hasn't been supported yet"))
 		fmt.Println()
+	}
+
+	fmt.Println()
+}
+
+// SearchTicketUsers : search all users related to this ticket
+func SearchTicketUsers(ticket *model.Ticket) {
+	assigneeID := ticket.AssigneeID
+	user, isFound := userByID[assigneeID]
+	if !isFound {
+		utils.NoResult(user, "_id", strconv.Itoa(assigneeID))
+	} else {
+		fmt.Println(aurora.BrightCyan("Assignee name"), ":", aurora.BrightGreen(user.Name))
+	}
+
+	submitterID := ticket.SubmitterID
+	user, isFound = userByID[submitterID]
+	if !isFound {
+		utils.NoResult(user, "_id", strconv.Itoa(submitterID))
+	} else {
+		fmt.Println(aurora.BrightCyan("Submitter name"), ":", aurora.BrightGreen(user.Name))
+	}
+}
+
+// SearchTicketOrganization : search organization related to this ticket
+func SearchTicketOrganization(ticket *model.Ticket) {
+	orgID := ticket.OrganizationID
+	org, isFound := organizationByID[orgID]
+	if !isFound {
+		utils.NoResult(org, "_id", strconv.Itoa(orgID))
+	} else {
+		fmt.Println(aurora.BrightCyan("Organization name"), ":", aurora.BrightGreen(org.Name))
 	}
 }
