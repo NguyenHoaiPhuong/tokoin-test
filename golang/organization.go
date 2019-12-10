@@ -91,7 +91,7 @@ func SearchOrganizationTickets(org *model.Organization) {
 	sortedTickets := ticketsByOrganizationID[id]
 	idx := 1
 	for ticketSubject := range sortedTickets {
-		fmt.Println(aurora.BrightYellow("Ticket " + strconv.Itoa(idx) + ": " + ticketSubject))
+		fmt.Println(aurora.BrightCyan("Ticket "+strconv.Itoa(idx)), ":", aurora.BrightGreen(ticketSubject))
 		idx++
 	}
 }
@@ -102,7 +102,7 @@ func SearchOrganizationUsers(org *model.Organization) {
 	sortedUsers := usersByOrganizationID[id]
 	idx := 1
 	for userName := range sortedUsers {
-		fmt.Println(aurora.BrightYellow("User " + strconv.Itoa(idx) + ": " + userName))
+		fmt.Println(aurora.BrightCyan("User "+strconv.Itoa(idx)), ":", aurora.BrightGreen(userName))
 		idx++
 	}
 }
