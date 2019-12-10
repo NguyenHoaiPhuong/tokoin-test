@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/NguyenHoaiPhuong/tokoin-test/golang/config"
+	"github.com/NguyenHoaiPhuong/tokoin-test/golang/model"
 	"github.com/NguyenHoaiPhuong/tokoin-test/golang/utils"
 	"github.com/logrusorgru/aurora"
 )
@@ -67,5 +68,20 @@ func Search() {
 
 // SearchableFields : print searchable fields
 func SearchableFields() {
+	fmt.Println("------------------------------------------------")
+	fmt.Println(aurora.BrightCyan("Search Users with"))
+	user := new(model.User)
+	utils.PrintPtrStructObjectTags(user)
 
+	fmt.Println("------------------------------------------------")
+	fmt.Println(aurora.BrightCyan("Search Tickets with"))
+	ticket := new(model.Ticket)
+	utils.PrintPtrStructObjectTags(ticket)
+
+	fmt.Println("------------------------------------------------")
+	fmt.Println(aurora.BrightCyan("Search Organizations with"))
+	org := new(model.Organization)
+	utils.PrintPtrStructObjectTags(org)
+
+	fmt.Println()
 }

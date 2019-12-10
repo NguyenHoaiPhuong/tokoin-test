@@ -33,3 +33,12 @@ func NoResult(obj interface{}, key, value string) {
 	fmt.Println(aurora.Red("Searching " + dataType + "s for " + key + " with a value of " + value))
 	fmt.Println(aurora.Red("No results found"))
 }
+
+// PrintPtrStructObjectTags : print pointer structure object tags
+func PrintPtrStructObjectTags(obj interface{}) {
+	v := reflect.ValueOf(obj).Elem()
+	t := v.Type()
+	for i := 0; i < v.NumField(); i++ {
+		fmt.Println(aurora.BrightGreen(t.Field(i).Tag.Get("json")))
+	}
+}
