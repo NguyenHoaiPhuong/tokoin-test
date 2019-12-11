@@ -26,7 +26,7 @@ cd golang
 
 ```
 dep ensure
-go run *.go
+go run main.go user.go ticket.go organization.go
 ```
 
 - If you want to run the app by building binary file, please run following commands:
@@ -35,6 +35,15 @@ go run *.go
 dep ensure
 go build -o app
 ./app
+```
+
+#### How to test the app
+
+- Access to golang directory and run command go test:
+
+```
+cd golang
+go test
 ```
 
 ### Python
@@ -57,11 +66,12 @@ The app is splitted into serveral packages:
 
 - **utils**: contains other useful functions, sucn as CheckError, PrintPtrStructObject, etc
 
-- **main**: this is the "entrypoint" package where go cmd will run the whole app. There are 4 go files in this package:
+- **main**: this is the "entrypoint" package where go cmd will run the whole app. There are 5 *.go files in this package:
     - main.go: includes function main() which is the entrypoint of *go run* command.
     - user.go: includes all functions related to user object
     - ticket.go: includes all functions related to ticket object
     - organization.go: includes all functions related to organization object
+    - user_test.go: includes a unit test of function ConsolidateUserData
 
 Workflow:
 
