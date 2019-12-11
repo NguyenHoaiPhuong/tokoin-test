@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -17,6 +18,8 @@ var (
 	userByExternalID      model.UserByExternalID      // Sorted user by ExternalID
 	userByName            model.UserByName            // Sorted user by its name
 	userByAlias           model.UserByAlias           // Sorted user by its alias
+	userByCreatedAt       model.UserByCreatedAt       // Sorted user by its CreatedAt
+	usersByActive         model.UsersByActive         // Sorted users by Active
 	usersByOrganizationID model.UsersByOrganizationID // Sorted users by OrganizationID
 )
 
@@ -27,6 +30,8 @@ func initUser() {
 	userByExternalID = make(model.UserByExternalID, 0)
 	userByName = make(model.UserByName, 0)
 	userByAlias = make(model.UserByAlias, 0)
+	userByCreatedAt = make(model.UserByCreatedAt, 0)
+	usersByActive = make(model.UsersByActive, 0)
 	usersByOrganizationID = make(model.UsersByOrganizationID, 0)
 }
 
@@ -43,6 +48,8 @@ func LoadUserData() {
 		appendToUserByExternalID(user)
 		appendToUserByName(user)
 		appendToUserByAlias(user)
+		appendToUserByCreatedAt(user)
+		appendToUsersByActive(user)
 		appendToUsersByOrganizationID(user)
 	}
 }
@@ -66,6 +73,19 @@ func appendToUserByName(user *model.User) {
 
 func appendToUserByAlias(user *model.User) {
 	userByAlias[user.Alias] = user
+}
+
+func appendToUserByCreatedAt(user *model.User) {
+	userByCreatedAt[user.CreatedAt] = user
+}
+
+func appendToUsersByActive(user *model.User) {
+	if _, ok := usersByActive[user.Active]; !ok {
+		usersByActive[user.Active] = make(model.UserByName, 0)
+	}
+	sortedUsers := usersByActive[user.Active]
+	sortedUsers[user.Name] = user
+	usersByActive[user.Active] = sortedUsers
 }
 
 func appendToUsersByOrganizationID(user *model.User) {
@@ -92,39 +112,33 @@ func SearchUser() {
 			return
 		}
 		user, isFound = userByID[id]
-		utils.PrintObject(user, isFound, key, value)
-		if isFound {
-			SearchUserTickets(user)
-			SearchUserOrganization(user)
-		}
+		PrintSingleUser(user, isFound, key, value)
 	case "url":
 		user, isFound = userByURL[value]
-		utils.PrintObject(user, isFound, key, value)
-		if isFound {
-			SearchUserTickets(user)
-			SearchUserOrganization(user)
-		}
+		PrintSingleUser(user, isFound, key, value)
 	case "external_id":
 		user, isFound = userByExternalID[value]
-		utils.PrintObject(user, isFound, key, value)
-		if isFound {
-			SearchUserTickets(user)
-			SearchUserOrganization(user)
-		}
+		PrintSingleUser(user, isFound, key, value)
 	case "name":
 		user, isFound = userByName[value]
-		utils.PrintObject(user, isFound, key, value)
-		if isFound {
-			SearchUserTickets(user)
-			SearchUserOrganization(user)
-		}
+		PrintSingleUser(user, isFound, key, value)
 	case "alias":
 		user, isFound = userByAlias[value]
-		utils.PrintObject(user, isFound, key, value)
-		if isFound {
-			SearchUserTickets(user)
-			SearchUserOrganization(user)
+		PrintSingleUser(user, isFound, key, value)
+	case "created_at":
+		user, isFound = userByCreatedAt[value]
+		PrintSingleUser(user, isFound, key, value)
+	case "active":
+		active := false
+		if value == "true" {
+			active = true
+		} else if value != "false" {
+			err := errors.New("Active value must be either true or false")
+			utils.CheckError(err)
+			return
 		}
+		sortedUsers, isFound := usersByActive[active]
+		PrintMultipleUsers(sortedUsers, isFound, key, value)
 	case "organization_id":
 		orgID, err := strconv.Atoi(value)
 		if err != nil {
@@ -132,22 +146,12 @@ func SearchUser() {
 			return
 		}
 		sortedUsers, isFound := usersByOrganizationID[orgID]
-		idx := 1
-		for _, user := range sortedUsers {
-			fmt.Println(aurora.BrightYellow("User " + strconv.Itoa(idx)))
-			utils.PrintObject(user, isFound, key, value)
-			if isFound {
-				SearchUserTickets(user)
-				SearchUserOrganization(user)
-			}
-			idx++
-		}
+		PrintMultipleUsers(sortedUsers, isFound, key, value)
 	default:
 		fmt.Println(aurora.Red("Searching term " + key + " hasn't been supported yet"))
-		fmt.Println()
 	}
 
-	fmt.Println()
+	utils.PrintSeparation()
 }
 
 // SearchUserTickets : search all tickets related to this user
@@ -177,5 +181,28 @@ func SearchUserOrganization(user *model.User) {
 		utils.NoResult(org, "_id", strconv.Itoa(orgID))
 	} else {
 		fmt.Println(aurora.BrightCyan("Organization name"), ":", aurora.BrightGreen(org.Name))
+	}
+}
+
+// PrintSingleUser : print 1 user
+func PrintSingleUser(user *model.User, isFound bool, key, value string) {
+	utils.PrintObject(user, isFound, key, value)
+	if isFound {
+		SearchUserTickets(user)
+		SearchUserOrganization(user)
+	}
+}
+
+// PrintMultipleUsers : print a slice of users
+func PrintMultipleUsers(sortedUsers model.UserByName, isFound bool, key, value string) {
+	idx := 1
+	for _, user := range sortedUsers {
+		fmt.Println(aurora.BrightYellow("User " + strconv.Itoa(idx)))
+		utils.PrintObject(user, isFound, key, value)
+		if isFound {
+			SearchUserTickets(user)
+			SearchUserOrganization(user)
+		}
+		idx++
 	}
 }

@@ -41,5 +41,11 @@ type UserByName map[string]*User
 // UserByAlias : sorted user by its alias
 type UserByAlias map[string]*User
 
+// UserByCreatedAt : sorted user by its alias
+type UserByCreatedAt map[string]*User
+
+// UsersByActive : map of users and their property Active. Key is the property Active.
+type UsersByActive map[bool]UserByName
+
 // UsersByOrganizationID : map of users and OrganizationID. Key is OrganizationID.
 type UsersByOrganizationID map[int]UserByName
