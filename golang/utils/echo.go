@@ -42,3 +42,8 @@ func PrintPtrStructObjectTags(obj interface{}) {
 		fmt.Println(aurora.BrightGreen(t.Field(i).Tag.Get("json")))
 	}
 }
+
+// PrintSeparation : print separation
+func PrintSeparation() {
+	fmt.Println("------------------------------------------------")
+}

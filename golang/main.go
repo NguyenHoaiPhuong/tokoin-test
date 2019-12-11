@@ -68,17 +68,17 @@ func Search() {
 
 // SearchableFields : print searchable fields
 func SearchableFields() {
-	fmt.Println("------------------------------------------------")
+	utils.PrintSeparation()
 	fmt.Println(aurora.BrightCyan("Search Users with"))
 	user := new(model.User)
 	utils.PrintPtrStructObjectTags(user)
 
-	fmt.Println("------------------------------------------------")
+	utils.PrintSeparation()
 	fmt.Println(aurora.BrightCyan("Search Tickets with"))
 	ticket := new(model.Ticket)
 	utils.PrintPtrStructObjectTags(ticket)
 
-	fmt.Println("------------------------------------------------")
+	utils.PrintSeparation()
 	fmt.Println(aurora.BrightCyan("Search Organizations with"))
 	org := new(model.Organization)
 	utils.PrintPtrStructObjectTags(org)
