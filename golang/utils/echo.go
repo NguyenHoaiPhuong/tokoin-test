@@ -10,11 +10,11 @@ import (
 // PrintPtrStructObject : print pointer structure object
 func PrintPtrStructObject(obj interface{}) {
 	v := reflect.ValueOf(obj).Elem()
-	numField := v.NumField()
-	for i := 0; i < numField; i++ {
+	t := v.Type()
+	for i := 0; i < v.NumField(); i++ {
 		fieldName := v.Type().Field(i).Name
 		fieldValue := v.FieldByName(fieldName)
-		fmt.Println(aurora.BrightCyan(fieldName), ":", aurora.BrightGreen(fieldValue))
+		fmt.Println(aurora.BrightCyan(t.Field(i).Tag.Get("json")), ":", aurora.BrightGreen(fieldValue))
 	}
 }
 

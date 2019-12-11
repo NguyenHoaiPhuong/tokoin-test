@@ -62,5 +62,20 @@ type UsersByTimezone map[string]UserByName
 // UserByLastLoginAt : sorted user by its LastLoginAt
 type UserByLastLoginAt map[string]*User
 
+// UserByEmail : sorted user by its Email
+type UserByEmail map[string]*User
+
+// UserByPhone : sorted user by its Phone
+type UserByPhone map[string]*User
+
+// UsersBySignature : sorted user by its Signature
+type UsersBySignature map[string]UserByName
+
+// UsersBySuspended : sorted user by its Suspended param
+type UsersBySuspended map[bool]UserByName
+
+// UsersByRole : sorted user by its Role
+type UsersByRole map[string]UserByName
+
 // UsersByOrganizationID : map of users and OrganizationID. Key is OrganizationID.
 type UsersByOrganizationID map[int]UserByName

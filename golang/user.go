@@ -25,6 +25,11 @@ var (
 	usersByLocale         model.UsersByLocale         // Sorted users by Locale
 	usersByTimezone       model.UsersByTimezone       // Sorted users by Timezone
 	userByLastLoginAt     model.UserByLastLoginAt     // Sorted user by LastLoginAt
+	userByEmail           model.UserByEmail           // Sorted user by Email
+	userByPhone           model.UserByPhone           // Sorted user by Phone
+	usersBySignature      model.UsersBySignature      // Sorted user by Signature
+	usersBySuspended      model.UsersBySuspended      // Sorted users by Suspended
+	usersByRole           model.UsersByRole           // Sorted users by Role
 	usersByOrganizationID model.UsersByOrganizationID // Sorted users by OrganizationID
 )
 
@@ -42,6 +47,11 @@ func initUser() {
 	usersByLocale = make(model.UsersByLocale, 0)
 	usersByTimezone = make(model.UsersByTimezone, 0)
 	userByLastLoginAt = make(model.UserByLastLoginAt, 0)
+	userByEmail = make(model.UserByEmail, 0)
+	userByPhone = make(model.UserByPhone, 0)
+	usersBySignature = make(model.UsersBySignature, 0)
+	usersBySuspended = make(model.UsersBySuspended, 0)
+	usersByRole = make(model.UsersByRole, 0)
 	usersByOrganizationID = make(model.UsersByOrganizationID, 0)
 }
 
@@ -65,6 +75,11 @@ func LoadUserData() {
 		appendToUsersByLocale(user)
 		appendToUsersByTimezone(user)
 		appendToUserByLastLoginAt(user)
+		appendToUserByEmail(user)
+		appendToUserByPhone(user)
+		appendToUsersBySignature(user)
+		appendToUsersBySuspended(user)
+		appendToUsersByRole(user)
 		appendToUsersByOrganizationID(user)
 	}
 }
@@ -139,6 +154,45 @@ func appendToUsersByTimezone(user *model.User) {
 	usersByTimezone[user.Timezone] = sortedUsers
 }
 
+func appendToUserByLastLoginAt(user *model.User) {
+	userByLastLoginAt[user.LastLoginAt] = user
+}
+
+func appendToUserByEmail(user *model.User) {
+	userByEmail[user.Email] = user
+}
+
+func appendToUserByPhone(user *model.User) {
+	userByPhone[user.Phone] = user
+}
+
+func appendToUsersBySignature(user *model.User) {
+	if _, ok := usersBySignature[user.Signature]; !ok {
+		usersBySignature[user.Signature] = make(model.UserByName, 0)
+	}
+	sortedUsers := usersBySignature[user.Signature]
+	sortedUsers[user.Name] = user
+	usersBySignature[user.Signature] = sortedUsers
+}
+
+func appendToUsersBySuspended(user *model.User) {
+	if _, ok := usersBySuspended[user.Suspended]; !ok {
+		usersBySuspended[user.Suspended] = make(model.UserByName, 0)
+	}
+	sortedUsers := usersBySuspended[user.Suspended]
+	sortedUsers[user.Name] = user
+	usersBySuspended[user.Suspended] = sortedUsers
+}
+
+func appendToUsersByRole(user *model.User) {
+	if _, ok := usersByRole[user.Role]; !ok {
+		usersByRole[user.Role] = make(model.UserByName, 0)
+	}
+	sortedUsers := usersByRole[user.Role]
+	sortedUsers[user.Name] = user
+	usersByRole[user.Role] = sortedUsers
+}
+
 func appendToUsersByOrganizationID(user *model.User) {
 	if _, ok := usersByOrganizationID[user.OrganizationID]; !ok {
 		usersByOrganizationID[user.OrganizationID] = make(model.UserByName, 0)
@@ -146,10 +200,6 @@ func appendToUsersByOrganizationID(user *model.User) {
 	sortedUsers := usersByOrganizationID[user.OrganizationID]
 	sortedUsers[user.Name] = user
 	usersByOrganizationID[user.OrganizationID] = sortedUsers
-}
-
-func appendToUserByLastLoginAt(user *model.User) {
-	userByLastLoginAt[user.LastLoginAt] = user
 }
 
 // SearchUser : search user
@@ -199,7 +249,7 @@ func SearchUser() {
 		if value == "true" {
 			verified = true
 		} else if value != "false" {
-			err := errors.New("Active value must be either true or false")
+			err := errors.New("Verified value must be either true or false")
 			utils.CheckError(err)
 			return
 		}
@@ -210,7 +260,7 @@ func SearchUser() {
 		if value == "true" {
 			shared = true
 		} else if value != "false" {
-			err := errors.New("Active value must be either true or false")
+			err := errors.New("Shared value must be either true or false")
 			utils.CheckError(err)
 			return
 		}
@@ -225,6 +275,29 @@ func SearchUser() {
 	case "last_login_at":
 		user, isFound = userByLastLoginAt[value]
 		PrintSingleUser(user, isFound, key, value)
+	case "email":
+		user, isFound = userByEmail[value]
+		PrintSingleUser(user, isFound, key, value)
+	case "phone":
+		user, isFound = userByPhone[value]
+		PrintSingleUser(user, isFound, key, value)
+	case "signature":
+		sortedUsers, isFound := usersBySignature[value]
+		PrintMultipleUsers(sortedUsers, isFound, key, value)
+	case "suspended":
+		suspended := false
+		if value == "true" {
+			suspended = true
+		} else if value != "false" {
+			err := errors.New("Suspended value must be either true or false")
+			utils.CheckError(err)
+			return
+		}
+		sortedUsers, isFound := usersBySuspended[suspended]
+		PrintMultipleUsers(sortedUsers, isFound, key, value)
+	case "role":
+		sortedUsers, isFound := usersByRole[value]
+		PrintMultipleUsers(sortedUsers, isFound, key, value)
 	case "organization_id":
 		orgID, err := strconv.Atoi(value)
 		if err != nil {
