@@ -118,9 +118,9 @@ func SearchTicket() {
 			utils.CheckError(err)
 			return
 		}
-		tickets, isFound := ticketsByOrganizationID[orgID]
+		sortedTickets, isFound := ticketsByOrganizationID[orgID]
 		idx := 1
-		for _, ticket := range tickets {
+		for _, ticket := range sortedTickets {
 			fmt.Println(aurora.BrightYellow("Ticket " + strconv.Itoa(idx)))
 			utils.PrintObject(ticket, isFound, key, value)
 			if isFound {
@@ -135,9 +135,9 @@ func SearchTicket() {
 			utils.CheckError(err)
 			return
 		}
-		tickets, isFound := ticketsBySubmitterID[submitterID]
+		sortedTickets, isFound := ticketsBySubmitterID[submitterID]
 		idx := 1
-		for _, ticket := range tickets {
+		for _, ticket := range sortedTickets {
 			fmt.Println(aurora.BrightYellow("Ticket " + strconv.Itoa(idx)))
 			utils.PrintObject(ticket, isFound, key, value)
 			if isFound {
