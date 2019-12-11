@@ -20,6 +20,11 @@ var (
 	userByAlias           model.UserByAlias           // Sorted user by its alias
 	userByCreatedAt       model.UserByCreatedAt       // Sorted user by its CreatedAt
 	usersByActive         model.UsersByActive         // Sorted users by Active
+	usersByVerified       model.UsersByVerified       // Sorted users by Verified
+	usersByShared         model.UsersByShared         // Sorted users by Shared
+	usersByLocale         model.UsersByLocale         // Sorted users by Locale
+	usersByTimezone       model.UsersByTimezone       // Sorted users by Timezone
+	userByLastLoginAt     model.UserByLastLoginAt     // Sorted user by LastLoginAt
 	usersByOrganizationID model.UsersByOrganizationID // Sorted users by OrganizationID
 )
 
@@ -32,6 +37,11 @@ func initUser() {
 	userByAlias = make(model.UserByAlias, 0)
 	userByCreatedAt = make(model.UserByCreatedAt, 0)
 	usersByActive = make(model.UsersByActive, 0)
+	usersByVerified = make(model.UsersByVerified, 0)
+	usersByShared = make(model.UsersByShared, 0)
+	usersByLocale = make(model.UsersByLocale, 0)
+	usersByTimezone = make(model.UsersByTimezone, 0)
+	userByLastLoginAt = make(model.UserByLastLoginAt, 0)
 	usersByOrganizationID = make(model.UsersByOrganizationID, 0)
 }
 
@@ -50,6 +60,11 @@ func LoadUserData() {
 		appendToUserByAlias(user)
 		appendToUserByCreatedAt(user)
 		appendToUsersByActive(user)
+		appendToUsersByVerified(user)
+		appendToUsersByShared(user)
+		appendToUsersByLocale(user)
+		appendToUsersByTimezone(user)
+		appendToUserByLastLoginAt(user)
 		appendToUsersByOrganizationID(user)
 	}
 }
@@ -88,6 +103,42 @@ func appendToUsersByActive(user *model.User) {
 	usersByActive[user.Active] = sortedUsers
 }
 
+func appendToUsersByVerified(user *model.User) {
+	if _, ok := usersByVerified[user.Verified]; !ok {
+		usersByVerified[user.Verified] = make(model.UserByName, 0)
+	}
+	sortedUsers := usersByVerified[user.Verified]
+	sortedUsers[user.Name] = user
+	usersByVerified[user.Verified] = sortedUsers
+}
+
+func appendToUsersByShared(user *model.User) {
+	if _, ok := usersByShared[user.Shared]; !ok {
+		usersByShared[user.Shared] = make(model.UserByName, 0)
+	}
+	sortedUsers := usersByShared[user.Shared]
+	sortedUsers[user.Name] = user
+	usersByShared[user.Shared] = sortedUsers
+}
+
+func appendToUsersByLocale(user *model.User) {
+	if _, ok := usersByLocale[user.Locale]; !ok {
+		usersByLocale[user.Locale] = make(model.UserByName, 0)
+	}
+	sortedUsers := usersByLocale[user.Locale]
+	sortedUsers[user.Name] = user
+	usersByLocale[user.Locale] = sortedUsers
+}
+
+func appendToUsersByTimezone(user *model.User) {
+	if _, ok := usersByTimezone[user.Timezone]; !ok {
+		usersByTimezone[user.Timezone] = make(model.UserByName, 0)
+	}
+	sortedUsers := usersByTimezone[user.Timezone]
+	sortedUsers[user.Name] = user
+	usersByTimezone[user.Timezone] = sortedUsers
+}
+
 func appendToUsersByOrganizationID(user *model.User) {
 	if _, ok := usersByOrganizationID[user.OrganizationID]; !ok {
 		usersByOrganizationID[user.OrganizationID] = make(model.UserByName, 0)
@@ -95,6 +146,10 @@ func appendToUsersByOrganizationID(user *model.User) {
 	sortedUsers := usersByOrganizationID[user.OrganizationID]
 	sortedUsers[user.Name] = user
 	usersByOrganizationID[user.OrganizationID] = sortedUsers
+}
+
+func appendToUserByLastLoginAt(user *model.User) {
+	userByLastLoginAt[user.LastLoginAt] = user
 }
 
 // SearchUser : search user
@@ -139,6 +194,37 @@ func SearchUser() {
 		}
 		sortedUsers, isFound := usersByActive[active]
 		PrintMultipleUsers(sortedUsers, isFound, key, value)
+	case "verified":
+		verified := false
+		if value == "true" {
+			verified = true
+		} else if value != "false" {
+			err := errors.New("Active value must be either true or false")
+			utils.CheckError(err)
+			return
+		}
+		sortedUsers, isFound := usersByVerified[verified]
+		PrintMultipleUsers(sortedUsers, isFound, key, value)
+	case "shared":
+		shared := false
+		if value == "true" {
+			shared = true
+		} else if value != "false" {
+			err := errors.New("Active value must be either true or false")
+			utils.CheckError(err)
+			return
+		}
+		sortedUsers, isFound := usersByShared[shared]
+		PrintMultipleUsers(sortedUsers, isFound, key, value)
+	case "locale":
+		sortedUsers, isFound := usersByLocale[value]
+		PrintMultipleUsers(sortedUsers, isFound, key, value)
+	case "timezone":
+		sortedUsers, isFound := usersByTimezone[value]
+		PrintMultipleUsers(sortedUsers, isFound, key, value)
+	case "last_login_at":
+		user, isFound = userByLastLoginAt[value]
+		PrintSingleUser(user, isFound, key, value)
 	case "organization_id":
 		orgID, err := strconv.Atoi(value)
 		if err != nil {
@@ -195,6 +281,11 @@ func PrintSingleUser(user *model.User, isFound bool, key, value string) {
 
 // PrintMultipleUsers : print a slice of users
 func PrintMultipleUsers(sortedUsers model.UserByName, isFound bool, key, value string) {
+	if len(sortedUsers) == 0 {
+		utils.NoResult(new(model.User), key, value)
+		return
+	}
+
 	idx := 1
 	for _, user := range sortedUsers {
 		fmt.Println(aurora.BrightYellow("User " + strconv.Itoa(idx)))

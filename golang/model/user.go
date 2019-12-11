@@ -41,11 +41,26 @@ type UserByName map[string]*User
 // UserByAlias : sorted user by its alias
 type UserByAlias map[string]*User
 
-// UserByCreatedAt : sorted user by its alias
+// UserByCreatedAt : sorted user by its CreatedAt prop
 type UserByCreatedAt map[string]*User
 
 // UsersByActive : map of users and their property Active. Key is the property Active.
 type UsersByActive map[bool]UserByName
+
+// UsersByVerified : map of users and their property Verified. Key is the property Verified.
+type UsersByVerified map[bool]UserByName
+
+// UsersByShared : map of users and their property Shared. Key is the property Shared.
+type UsersByShared map[bool]UserByName
+
+// UsersByLocale : map of users and their Locale. Key is Locale.
+type UsersByLocale map[string]UserByName
+
+// UsersByTimezone : map of users and their Timezone. Key is Timezone.
+type UsersByTimezone map[string]UserByName
+
+// UserByLastLoginAt : sorted user by its LastLoginAt
+type UserByLastLoginAt map[string]*User
 
 // UsersByOrganizationID : map of users and OrganizationID. Key is OrganizationID.
 type UsersByOrganizationID map[int]UserByName
