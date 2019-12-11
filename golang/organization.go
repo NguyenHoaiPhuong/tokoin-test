@@ -74,7 +74,6 @@ func SearchOrganization() {
 		utils.PrintObject(org, isFound, key, value)
 	default:
 		fmt.Println(aurora.Red("Searching term " + key + " hasn't been supported yet"))
-		fmt.Println()
 	}
 
 	if isFound {
@@ -82,7 +81,7 @@ func SearchOrganization() {
 		SearchOrganizationUsers(org)
 	}
 
-	fmt.Println()
+	utils.PrintSeparation()
 }
 
 // SearchOrganizationTickets : search all tickets related to this organization

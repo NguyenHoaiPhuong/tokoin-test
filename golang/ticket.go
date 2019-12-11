@@ -165,10 +165,9 @@ func SearchTicket() {
 		}
 	default:
 		fmt.Println(aurora.Red("Searching term " + key + " hasn't been supported yet"))
-		fmt.Println()
 	}
 
-	fmt.Println()
+	utils.PrintSeparation()
 }
 
 // SearchTicketUsers : search all users related to this ticket
