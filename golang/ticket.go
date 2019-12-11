@@ -93,25 +93,13 @@ func SearchTicket() {
 	switch key {
 	case "_id":
 		ticket, isFound := ticketByID[value]
-		utils.PrintObject(ticket, isFound, key, value)
-		if isFound {
-			SearchTicketUsers(ticket)
-			SearchTicketOrganization(ticket)
-		}
+		PrintSingleTicket(ticket, isFound, key, value)
 	case "external_id":
 		ticket, isFound := ticketByExternalID[value]
-		utils.PrintObject(ticket, isFound, key, value)
-		if isFound {
-			SearchTicketUsers(ticket)
-			SearchTicketOrganization(ticket)
-		}
+		PrintSingleTicket(ticket, isFound, key, value)
 	case "subject":
 		ticket, isFound := ticketBySubject[value]
-		utils.PrintObject(ticket, isFound, key, value)
-		if isFound {
-			SearchTicketUsers(ticket)
-			SearchTicketOrganization(ticket)
-		}
+		PrintSingleTicket(ticket, isFound, key, value)
 	case "organization_id":
 		orgID, err := strconv.Atoi(value)
 		if err != nil {
@@ -119,16 +107,7 @@ func SearchTicket() {
 			return
 		}
 		sortedTickets, isFound := ticketsByOrganizationID[orgID]
-		idx := 1
-		for _, ticket := range sortedTickets {
-			fmt.Println(aurora.BrightYellow("Ticket " + strconv.Itoa(idx)))
-			utils.PrintObject(ticket, isFound, key, value)
-			if isFound {
-				SearchTicketUsers(ticket)
-				SearchTicketOrganization(ticket)
-			}
-			idx++
-		}
+		PrintMultipleTickets(sortedTickets, isFound, key, value)
 	case "submitter_id":
 		submitterID, err := strconv.Atoi(value)
 		if err != nil {
@@ -136,33 +115,15 @@ func SearchTicket() {
 			return
 		}
 		sortedTickets, isFound := ticketsBySubmitterID[submitterID]
-		idx := 1
-		for _, ticket := range sortedTickets {
-			fmt.Println(aurora.BrightYellow("Ticket " + strconv.Itoa(idx)))
-			utils.PrintObject(ticket, isFound, key, value)
-			if isFound {
-				SearchTicketUsers(ticket)
-				SearchTicketOrganization(ticket)
-			}
-			idx++
-		}
+		PrintMultipleTickets(sortedTickets, isFound, key, value)
 	case "assignee_id":
 		assigneeID, err := strconv.Atoi(value)
 		if err != nil {
 			utils.CheckError(err)
 			return
 		}
-		tickets, isFound := ticketsByAssigneeID[assigneeID]
-		idx := 1
-		for _, ticket := range tickets {
-			fmt.Println(aurora.BrightYellow("Ticket " + strconv.Itoa(idx)))
-			utils.PrintObject(ticket, isFound, key, value)
-			if isFound {
-				SearchTicketUsers(ticket)
-				SearchTicketOrganization(ticket)
-			}
-			idx++
-		}
+		sortedTickets, isFound := ticketsByAssigneeID[assigneeID]
+		PrintMultipleTickets(sortedTickets, isFound, key, value)
 	default:
 		fmt.Println(aurora.Red("Searching term " + key + " hasn't been supported yet"))
 	}
@@ -197,5 +158,29 @@ func SearchTicketOrganization(ticket *model.Ticket) {
 		utils.NoResult(org, "_id", strconv.Itoa(orgID))
 	} else {
 		fmt.Println(aurora.BrightCyan("Organization name"), ":", aurora.BrightGreen(org.Name))
+	}
+}
+
+// PrintSingleTicket : print 1 ticket
+func PrintSingleTicket(ticket *model.Ticket, isFound bool, key, value string) {
+	utils.PrintObject(ticket, isFound, key, value)
+	if isFound {
+		SearchTicketUsers(ticket)
+		SearchTicketOrganization(ticket)
+	}
+}
+
+// PrintMultipleTickets : print a multiple of tickets
+func PrintMultipleTickets(sortedTickets model.TicketBySubject, isFound bool, key, value string) {
+	if len(sortedTickets) == 0 {
+		utils.NoResult(new(model.TicketBySubject), key, value)
+		return
+	}
+
+	idx := 1
+	for _, ticket := range sortedTickets {
+		fmt.Println(aurora.BrightYellow("Ticket " + strconv.Itoa(idx)))
+		PrintSingleTicket(ticket, isFound, key, value)
+		idx++
 	}
 }

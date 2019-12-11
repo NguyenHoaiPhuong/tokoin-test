@@ -352,7 +352,7 @@ func PrintSingleUser(user *model.User, isFound bool, key, value string) {
 	}
 }
 
-// PrintMultipleUsers : print a slice of users
+// PrintMultipleUsers : print a multiple of users
 func PrintMultipleUsers(sortedUsers model.UserByName, isFound bool, key, value string) {
 	if len(sortedUsers) == 0 {
 		utils.NoResult(new(model.User), key, value)
@@ -362,11 +362,7 @@ func PrintMultipleUsers(sortedUsers model.UserByName, isFound bool, key, value s
 	idx := 1
 	for _, user := range sortedUsers {
 		fmt.Println(aurora.BrightYellow("User " + strconv.Itoa(idx)))
-		utils.PrintObject(user, isFound, key, value)
-		if isFound {
-			SearchUserTickets(user)
-			SearchUserOrganization(user)
-		}
+		PrintSingleUser(user, isFound, key, value)
 		idx++
 	}
 }
