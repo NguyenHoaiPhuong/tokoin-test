@@ -30,7 +30,10 @@ func LoadOrganizationData() {
 
 	err := jsonfunc.ReadFromFile(cfg.URLs.OrganizationURL, &organizations)
 	utils.CheckError(err)
+}
 
+// ConsolidateOrganizationData : store organizations in maps
+func ConsolidateOrganizationData() {
 	for _, organization := range organizations {
 		appendToOrganizationByID(organization)
 		appendToOrganizationByExternalID(organization)

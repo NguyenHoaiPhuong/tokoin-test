@@ -17,6 +17,7 @@ func init() {
 
 func main() {
 	LoadData()
+	ConsolidateData()
 
 	cont := true
 	for cont {
@@ -48,6 +49,13 @@ func LoadData() {
 	LoadUserData()
 	LoadTicketData()
 	LoadOrganizationData()
+}
+
+// ConsolidateData : consolidate data
+func ConsolidateData() {
+	ConsolidateUserData()
+	ConsolidateTicketData()
+	ConsolidateOrganizationData()
 }
 
 // Search : print search results

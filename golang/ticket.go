@@ -36,7 +36,10 @@ func LoadTicketData() {
 
 	err := jsonfunc.ReadFromFile(cfg.URLs.TicketURL, &tickets)
 	utils.CheckError(err)
+}
 
+// ConsolidateTicketData : store tickets in maps
+func ConsolidateTicketData() {
 	for _, ticket := range tickets {
 		appendToTicketByID(ticket)
 		appendToTicketByExternalID(ticket)

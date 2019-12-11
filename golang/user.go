@@ -61,7 +61,10 @@ func LoadUserData() {
 
 	err := jsonfunc.ReadFromFile(cfg.URLs.UserURL, &users)
 	utils.CheckError(err)
+}
 
+// ConsolidateUserData : store users in maps
+func ConsolidateUserData() {
 	for _, user := range users {
 		appendToUserByID(user)
 		appendToUserByURL(user)
